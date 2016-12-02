@@ -10,8 +10,9 @@ Transform::Transform(Frame &frame):frame(frame)
 
 Frame Transform::PnP()
 {
+    cout<<frame.cameraMatrix<<endl;
     solvePnPRansac(frame.lastRefFrameMatchedP3d,frame.matchedP,frame.cameraMatrix, Mat(), frame.rvec, frame.tvec,false,
-                   100,1.0,100, frame.inliers);
+                   1000,1.0,100, frame.inliers);
     Mat R;
     Rodrigues(frame.rvec,R);
     Eigen::Matrix3d r;

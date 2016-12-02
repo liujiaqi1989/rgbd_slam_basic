@@ -53,20 +53,7 @@ int main( int argc, char** argv )
 
   }
 
-//  Transform pointTransform = Transform(rgb,depth,parameter);
 
-//  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
-//  pointTransform.RGB2PointCloud(cloud);
-
-//  pcl::io::savePCDFile( resultPath+"/pointcloud1.pcd", *cloud );
-
-//  cout<<"Point cloud saved."<<endl;
-//  pcl::visualization::CloudViewer viewer( "viewer" );
-//  viewer.showCloud(cloud);
-//  while( !viewer.wasStopped() )
-//  {
-
-//  }
   return 0;
 }
 
@@ -99,3 +86,17 @@ void LoadImagePath(const string &associationFilename, vector<string> &rgbFilenam
   }
 
 }
+//  Transform pointTransform = Transform(rgb,depth,parameter);
+
+//  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZRGBA>);
+//  pointTransform.RGB2PointCloud(cloud);
+
+//  pcl::io::savePCDFile( resultPath+"/pointcloud1.pcd", *cloud );
+
+//  cout<<"Point cloud saved."<<endl;
+//  pcl::visualization::CloudViewer viewer( "viewer" );
+//  viewer.showCloud(cloud);
+//  while( !viewer.wasStopped() )
+//  {
+
+//  }
