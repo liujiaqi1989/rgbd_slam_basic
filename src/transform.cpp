@@ -10,9 +10,9 @@ Transform::Transform(Frame &frame):frame(frame)
 
 Frame Transform::PnP()
 {
-    cout<<frame.cameraMatrix<<endl;
     solvePnPRansac(frame.lastRefFrameMatchedP3d,frame.matchedP,frame.cameraMatrix, Mat(), frame.rvec, frame.tvec,false,
-                   1000,1.0,100, frame.inliers);
+                   1000,8.0,100, frame.inliers);
+    cout<<"PnP inliers: "<<frame.inliers.rows<<endl;
     Mat R;
     Rodrigues(frame.rvec,R);
     Eigen::Matrix3d r;
@@ -24,7 +24,7 @@ Frame Transform::PnP()
     T(0,3)=frame.tvec.at<double>(0,0);
     T(1,3)=frame.tvec.at<double>(0,1);
     T(2,3)=frame.tvec.at<double>(0,2);
-    cout<<T.matrix()<<endl;
+    cout<<"Transform matrix: "<<endl<<T.matrix()<<endl;
     return frame;
 }
 
@@ -53,7 +53,6 @@ Frame Transform::RGB2PointCloud()
 
 pcl::PointCloud<pcl::PointXYZRGBA>::Ptr Transform::jointCloud(Frame &refFrame)
 {
-
     pcl::transformPointCloud(*refFrame.cloud, *tempCloud, T.matrix());
     *tempCloud+=*frame.cloud;
     return tempCloud;

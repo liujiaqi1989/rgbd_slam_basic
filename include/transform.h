@@ -21,8 +21,8 @@ class Transform
 private:
     Frame frame;
     InstrinsicParameters Parameter;
-    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr tempCloud;
     Eigen::Isometry3d T;
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr tempCloud;
 public:
     Transform(Frame &frame);
     Frame PnP();

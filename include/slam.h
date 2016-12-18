@@ -25,7 +25,7 @@ private:
     InstrinsicParameters Parameter;
     Frame CurrentFrame;
     vector<Frame> RefFrames;
-
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr Result;
 
 public:
     Slam(const string &settingsPath, const string &resultPath);

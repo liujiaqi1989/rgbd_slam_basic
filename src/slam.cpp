@@ -7,6 +7,8 @@ Slam::Slam(const string &settingsPath, const string &resultPath)
 
     this->settingsPath=settingsPath;
     this->resultPath=resultPath;
+    pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result (new pcl::PointCloud<pcl::PointXYZRGBA>);
+    Result=result;
 
     // Check the setting file.
     if(!readFromTextFile()){
@@ -54,8 +56,8 @@ bool Slam::readFromTextFile(){
 void Slam::Tracking(Mat &imRGB, Mat &imDepth){
 
     // Set voxel grid filter parameters.
-    pcl::VoxelGrid<pcl::PointXYZRGBA> voxel;
-    voxel.setLeafSize(0.02f,0.02f,0.02f);
+//    pcl::VoxelGrid<pcl::PointXYZRGBA> voxel;
+//    voxel.setLeafSize(0.02f,0.02f,0.02f);
     CurrentFrame=Frame(imRGB, imDepth, Parameter, RefFrames);
     Transform transform(CurrentFrame);
     if(CurrentFrame.id==0)
@@ -64,10 +66,10 @@ void Slam::Tracking(Mat &imRGB, Mat &imDepth){
         pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result(new pcl::PointCloud<pcl::PointXYZRGBA>);
 
         // Voxel grid filter.
-        voxel.setInputCloud( CurrentFrame.cloud );
-        voxel.filter(*result);
+//        voxel.setInputCloud( CurrentFrame.cloud );
+//        voxel.filter(*result);
         pcl::visualization::CloudViewer viewer( "viewer" );
-        viewer.showCloud(result);
+        viewer.showCloud(CurrentFrame.cloud);
 
         // Add the currentframe into the previous frame database.
         RefFrames.push_back(CurrentFrame);
@@ -75,20 +77,23 @@ void Slam::Tracking(Mat &imRGB, Mat &imDepth){
     else
     {
         CurrentFrame=transform.PnP();
+        if(CurrentFrame.inliers.rows>5)
+        {
         CurrentFrame=transform.RGB2PointCloud();
-        pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result=transform.jointCloud(RefFrames.back());
-        pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result2(new pcl::PointCloud<pcl::PointXYZRGBA>);
+        Result=transform.jointCloud(RefFrames.back());
+//       pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result2(new pcl::PointCloud<pcl::PointXYZRGBA>);
         // Voxel grid filter.
-        voxel.setInputCloud( result );
-        voxel.filter(*result2);
+//        voxel.setInputCloud( result );
+//        voxel.filter(*result2);
         pcl::visualization::CloudViewer viewer( "viewer" );
-        viewer.showCloud(result2);
+        viewer.showCloud(Result);
         while( !viewer.wasStopped() )
         {
 
         }
         // Add the currentframe into the previous frame database.
         RefFrames.push_back(CurrentFrame);
+        }
     }
 
 }
