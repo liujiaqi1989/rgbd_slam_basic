@@ -7,12 +7,15 @@ Slam::Slam(const string &settingsPath, const string &resultPath)
 
     this->settingsPath=settingsPath;
     this->resultPath=resultPath;
+
+    // Check the setting file.
     if(!readFromTextFile()){
         cerr<<"Failed to open settings file at: "<<this->settingsPath<<endl;
     }
 
 }
 
+// This function read parameter settings from text file.
 bool Slam::readFromTextFile(){
 
     ifstream fparameter;
@@ -50,6 +53,7 @@ bool Slam::readFromTextFile(){
 
 void Slam::Tracking(Mat &imRGB, Mat &imDepth){
 
+    // Set voxel grid filter parameters.
     pcl::VoxelGrid<pcl::PointXYZRGBA> voxel;
     voxel.setLeafSize(0.02f,0.02f,0.02f);
     CurrentFrame=Frame(imRGB, imDepth, Parameter, RefFrames);
@@ -58,11 +62,14 @@ void Slam::Tracking(Mat &imRGB, Mat &imDepth){
     {
         CurrentFrame=transform.RGB2PointCloud();
         pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result(new pcl::PointCloud<pcl::PointXYZRGBA>);
+
+        // Voxel grid filter.
         voxel.setInputCloud( CurrentFrame.cloud );
         voxel.filter(*result);
         pcl::visualization::CloudViewer viewer( "viewer" );
         viewer.showCloud(result);
 
+        // Add the currentframe into the previous frame database.
         RefFrames.push_back(CurrentFrame);
     }
     else
@@ -71,6 +78,7 @@ void Slam::Tracking(Mat &imRGB, Mat &imDepth){
         CurrentFrame=transform.RGB2PointCloud();
         pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result=transform.jointCloud(RefFrames.back());
         pcl::PointCloud<pcl::PointXYZRGBA>::Ptr result2(new pcl::PointCloud<pcl::PointXYZRGBA>);
+        // Voxel grid filter.
         voxel.setInputCloud( result );
         voxel.filter(*result2);
         pcl::visualization::CloudViewer viewer( "viewer" );
@@ -79,6 +87,7 @@ void Slam::Tracking(Mat &imRGB, Mat &imDepth){
         {
 
         }
+        // Add the currentframe into the previous frame database.
         RefFrames.push_back(CurrentFrame);
     }
 

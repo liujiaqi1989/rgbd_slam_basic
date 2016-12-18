@@ -1,4 +1,6 @@
-
+/**
+  This file is the main function of RGB-D SLAM.
+  */
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -8,31 +10,32 @@
 #include <pcl/common/transforms.h>
 #include <pcl/visualization/cloud_viewer.h>
 
-
-
 #include "slam.h"
 
 
 using namespace std;
 using namespace cv;
 
+// This is a function which can get the data path from the association txt file.
 void LoadImagePath(const string &associationFilename, vector<string> &rgbFilename,
                 vector<string> &depthFilename);
 
+// Main function.
 int main( int argc, char** argv )
 {
+  //  Check the input parameters.
   if(argc!=5){
       cerr<<"Usage:./main dataset_path association_path parameter_path result_path"<<endl;
   return 1;
   }
 
-  // load image path
+  // Load image path.
   vector<string> rgbFilename, depthFilename;
   LoadImagePath(argv[2],rgbFilename,depthFilename);
 
   Slam slam(argv[3],argv[4]);
 
-  // Main loop
+  // Main loop.
   Mat imRGB, imDepth;
   for(size_t i=0;i<rgbFilename.size();i++)
   {
@@ -49,6 +52,7 @@ int main( int argc, char** argv )
           return 1;
       }
 
+      // The SLAM part.
       slam.Tracking(imRGB, imDepth);
 
   }

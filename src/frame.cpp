@@ -42,6 +42,7 @@ Frame::Frame(const Mat &imRGB, const Mat &imDepth, const InstrinsicParameters &p
     }
 }
 
+// Find matched feature points.
 void Frame::FindMatching(const Frame &lastRefFrame, const string &matchingtype)
 {
     Ptr<DescriptorMatcher> matcher=DescriptorMatcher::create(matchingtype);
@@ -67,12 +68,15 @@ void Frame::FindMatching(const Frame &lastRefFrame, const string &matchingtype)
 
     for(size_t l=0;l<goodMatches.size();l++)
     {
+        // Store the image points of matched points.
         matchedP.push_back(keys[goodMatches[l].trainIdx].pt);
 
         Point2f lastRefFrameMatchedP=lastRefFrame.keys[goodMatches[l].queryIdx].pt;
         ushort d=lastRefFrame.imDepth.ptr<ushort>(int(lastRefFrameMatchedP.y))[int(lastRefFrameMatchedP.x)];
         if(d==0)
            continue;
+
+        // Store the 3D points of last reference frame.
         Point3f P;
         P.z=double(d)/Parameter.scale;
         P.x=(lastRefFrameMatchedP.x-Parameter.cx)*P.z/Parameter.fx;
